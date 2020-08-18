@@ -18,6 +18,8 @@ class Paddle {
   double leftPosition = 0;
 
   Paddle(this.game, this.left, this.top) {
+    width = game.screenSize.width / 3;
+
     paddle = Rect.fromLTWH(this.left, this.top, width, height);
     paddleColor = Paint();
     paddleColor.color = Colors.red;
@@ -34,20 +36,26 @@ class Paddle {
     } else if (dx > 0) {
       leftPosition = min(game.screenSize.width - 75, dx * t);
     }
-
-    paddle = paddle.translate(leftPosition, 0);
+    if (left > game.screenSize.width - (width - 3)) {
+      left = game.screenSize.width - (width - 3);
+      dx = 0;
+    }
+    if (left < 2) {
+      dx = 0;
+      left = 2;
+    }
+    if (dx != 0) {
+      paddle = paddle.translate(leftPosition, 0);
+      dx = 0;
+      print(paddle);
+    }
   }
 
-  void onTapDown(String paddleName) {
-    // if (paddleName == "leftPlayer1") {
-    //   dx = -kPaddleSpeed;
-    // } else if (paddleName == "rightPlayer1") {
-    //   dx = kPaddleSpeed;
-    // }
-    // if (paddleName == "leftPlayer2") {
-    //   dx = -kPaddleSpeed;
-    // } else if (paddleName == "rightPlayer2") {
-    //   dx = kPaddleSpeed;
-    // }
+  void reset(double leftPos, double topPos) {
+    dx = 0;
+    Offset pos = Offset(leftPos, topPos);
+
+    paddle.shift(pos);
+    // paddle = Rect.fromLTWH(leftPos, topPos, width, height);
   }
 }

@@ -1,6 +1,5 @@
 import 'dart:math';
 import 'dart:ui';
-
 import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
 import 'package:flame/gestures.dart';
@@ -9,9 +8,11 @@ import 'package:pong_flutter/Components/Ball.dart';
 import 'package:pong_flutter/Components/Controller.dart';
 import 'package:pong_flutter/Components/Paddle.dart';
 
-class PongGame extends Game with TapDetector {
+class PongGame extends BaseGame with TapDetector {
   Size screenSize;
 
+  int player1Score = 0;
+  int player2Score = 0;
   Ball ball;
   Ball ball2;
   Ball ball3;
@@ -19,7 +20,7 @@ class PongGame extends Game with TapDetector {
   Paddle topPaddle;
   Paddle bottomPaddle;
   Controller controller;
-  final kPaddleSpeed = 100.0;
+  final kPaddleSpeed = 450.0;
   PongGame() {
     initialize();
   }
@@ -62,30 +63,14 @@ class PongGame extends Game with TapDetector {
 
     //Score Setter
     if (ball.top < 0) {
-      ball.reset();
+      player2Score++;
+      resetGame();
     } else if (ball.top > screenSize.height - 12.5) {
-      ball.reset();
+      player1Score++;
+      resetGame();
     }
 
     ball.update(t);
-
-    // --Game Controls
-    //      if love.keyboard.isDown('w') then
-    //       paddle1.dy=-PADDLE_SPEED
-    //   elseif
-    //       love.keyboard.isDown('s') then
-    //       paddle1.dy=PADDLE_SPEED
-    //   else
-    //       paddle1.dy=0
-    //   end
-
-    //   if love.keyboard.isDown('up') then
-    //       paddle2.dy=-PADDLE_SPEED
-    //   elseif love.keyboard.isDown('down') then
-    //       paddle2.dy=PADDLE_SPEED
-    //   else
-    //       paddle2.dy=0
-    //   end
 
     topPaddle.update(t);
     bottomPaddle.update(t);
@@ -104,24 +89,25 @@ class PongGame extends Game with TapDetector {
     print("Player tap down on ${d.globalPosition.dx} - ${d.globalPosition.dy}");
 
     if (controller.leftPlayer1.contains(d.globalPosition)) {
-      topPaddle.onTapDown("leftPlayer1");
       topPaddle.dx = -kPaddleSpeed;
     } else if (controller.rightPlayer1.contains(d.globalPosition)) {
-      topPaddle.onTapDown("rightPlayer1");
       topPaddle.dx = kPaddleSpeed;
     } else {
       topPaddle.dx = 0;
     }
     if (controller.leftPlayer2.contains(d.globalPosition)) {
-      bottomPaddle.onTapDown("leftPlayer2");
-
       bottomPaddle.dx = -kPaddleSpeed;
     } else if (controller.rightPlayer2.contains(d.globalPosition)) {
-      bottomPaddle.onTapDown("rightPlayer2");
-
       bottomPaddle.dx = kPaddleSpeed;
     } else {
       bottomPaddle.dx = 0;
     }
+  }
+
+  void resetGame() {
+    print("P1 $player1Score, P2 $player2Score");
+    ball.reset();
+    topPaddle.reset(screenSize.width / 2 - 75, screenSize.height - 700);
+    bottomPaddle.reset(screenSize.width / 2 - 75, screenSize.height - 50);
   }
 }

@@ -29,8 +29,9 @@ class Ball extends BaseGame {
     top = game.screenSize.height / 2 - 12.5;
 
     direction = rnd.nextInt(2) == 1 ? -1 : 1;
-    dx = direction * 100;
-    dy = rnd.nextInt(75) * direction;
+    dx = direction * 200;
+    //dy = rnd.nextInt(500) * direction;
+    dy = 50 * direction;
     ball = Rect.fromLTWH(left, top, width, height);
   }
 
